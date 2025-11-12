@@ -14,13 +14,20 @@ const Cart = () => {
     const [couponCode, setCouponCode] = useState('');
     const [appliedCoupon, setAppliedCoupon] = useState(null);
     const [discount, setDiscount] = useState(0);
+    const [isLoading, setIsLoading] = useState(true)
+
+    // Ensure we always have valid values
+    const safeCartItems = cartItems || {};
+    const safeProducts = products || [];
 
     const getCart = () => {
         let tempArray = []
-        for (const key in cartItems) {
-            const product = products.find((item) => item._id === key)
-            product.quantity = cartItems[key]
-            tempArray.push(product)
+        for (const key in safeCartItems) {
+            const product = safeProducts.find((item) => item._id === key)
+            if (product) {
+                product.quantity = safeCartItems[key]
+                tempArray.push(product)
+            }
         }
         setCartArray(tempArray)
     }
@@ -136,10 +143,12 @@ const Cart = () => {
     };
 
     useEffect(() => {
-        if (products.length > 0 && cartItems) {
+        if (safeProducts.length > 0 && safeCartItems && Object.keys(safeCartItems).length > 0) {
             getCart() 
+        } else {
+            setCartArray([])
         }
-    }, [products, cartItems])
+    }, [safeProducts, safeCartItems])
     
     useEffect(() => {
         if (user) {
@@ -147,13 +156,56 @@ const Cart = () => {
         }
     },[user])
     
-    return products.length> 0 && cartItems ? (
+    // Show loading state while products are being fetched (only for a short time)
+    useEffect(() => {
+        // Give products a moment to load
+        const timer = setTimeout(() => {
+            setIsLoading(false)
+        }, 1000)
+        return () => clearTimeout(timer)
+    }, [])
+    
+    // Check if cart has items and products are loaded
+    const hasCartItems = safeCartItems && Object.keys(safeCartItems).length > 0;
+    const hasValidCartArray = cartArray.length > 0;
+
+    // Show loading state while products are being fetched
+    if (isLoading && safeProducts.length === 0) {
+        return (
+            <div className="flex items-center justify-center min-h-[60vh] mt-16">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                    <p className="text-gray-500">Đang tải giỏ hàng...</p>
+                </div>
+            </div>
+        )
+    }
+
+    // Show empty cart message if cart is empty or no products found
+    if (!hasCartItems || !hasValidCartArray) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[60vh] mt-16">
+                <div className="text-center">
+                    <img src={assets.cart_icon} alt="empty cart" className="w-32 h-32 mx-auto mb-6 opacity-50" />
+                    <h2 className="text-2xl font-medium mb-4">Giỏ hàng của bạn đang trống</h2>
+                    <p className="text-gray-500 mb-6">Hãy thêm sản phẩm vào giỏ hàng để tiếp tục mua sắm</p>
+                    <button 
+                        onClick={() => { navigate("/products"); scrollTo(0,0) }} 
+                        className="px-6 py-3 bg-primary text-white font-medium rounded hover:bg-primary-dull transition"
+                    >
+                        Tiếp tục mua sắm
+                    </button>
+                </div>
+            </div>
+        )
+    }
+    
+    // Render cart with items
+    return (
         <div className="flex flex-col md:flex-row mt-16">
             <div className='flex-1 max-w-4xl'>
                 <h1 className="text-3xl font-medium mb-6">
-                    Giỏ hàng của bạn <span className="text-sm text-primary">{getCartCount()}
-                        món hàng
-                    </span>
+                    Giỏ hàng của bạn <span className="text-sm text-primary">{getCartCount() || 0} món hàng</span>
                 </h1>
 
                 <div className="grid grid-cols-[2fr_1fr_1fr] text-gray-500 text-base font-medium pb-3">
@@ -179,28 +231,28 @@ const Cart = () => {
                                         <div className='flex items-center border border-gray-300 rounded ml-2'>
                                             <button
                                                 onClick={() => {
-                                                    const currentQty = cartItems[product._id];
+                                                    const currentQty = safeCartItems[product._id] || 0;
                                                     if (currentQty > 1) {
                                                         updateCartItem(product._id, currentQty - 1);
                                                     }
                                                 }}
                                                 className='px-3 py-1 hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-800'
-                                                disabled={cartItems[product._id] <= 1}
+                                                disabled={(safeCartItems[product._id] || 0) <= 1}
                                             >
                                                 −
                                             </button>
                                             <span className='px-4 py-1 min-w-[3rem] text-center border-x border-gray-300 bg-gray-50'>
-                                                {cartItems[product._id]}
+                                                {safeCartItems[product._id] || 0}
                                             </span>
                                             <button
                                                 onClick={() => {
-                                                    const currentQty = cartItems[product._id];
+                                                    const currentQty = safeCartItems[product._id] || 0;
                                                     if (currentQty < 99) {
                                                         updateCartItem(product._id, currentQty + 1);
                                                     }
                                                 }}
                                                 className='px-3 py-1 hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-800'
-                                                disabled={cartItems[product._id] >= 99}
+                                                disabled={(safeCartItems[product._id] || 0) >= 99}
                                             >
                                                 +
                                             </button>
@@ -343,6 +395,6 @@ const Cart = () => {
                 </button>
             </div>
         </div>
-    ) : null
+    )
 }
 export default Cart

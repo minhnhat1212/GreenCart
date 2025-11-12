@@ -89,9 +89,15 @@ export const AppContextProvider = ({ children }) => {
     }
     //tinh sl item trong cart
     const getCartCount = () => {
+        if (!cartItems || typeof cartItems !== 'object') {
+            return 0;
+        }
         let totalCount = 0;
         for (const item in cartItems) {
-            totalCount += cartItems[item];
+            if (cartItems.hasOwnProperty(item)) {
+                const quantity = Number(cartItems[item]) || 0;
+                totalCount += quantity;
+            }
         }
         return totalCount;
     }
