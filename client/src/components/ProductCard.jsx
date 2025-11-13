@@ -1,10 +1,11 @@
 import React from "react";
-import { assets } from "../assets/assets";
+import { assets, unitsByCategory } from "../assets/assets";
 import { useAppContext } from "../context/AppContext.jsx";
 
 const ProductCard = ({product}) => {
    
     const {currency,addToCart,removeFromCart,cartItems,navigate, formatCurrency} = useAppContext()
+    const displayUnit = product.unit || unitsByCategory[product.category]?.[0] || "";
 
     return product && (
         <div onClick={()=> {navigate(`/products/ ${product.category.toLowerCase()}/${product._id}`); scrollTo(0,0)}} className="border border-gray-500/20 rounded-md md:px-4 px-3 py-2 bg-white min-w-56 max-w-56 w-full">
@@ -13,7 +14,12 @@ const ProductCard = ({product}) => {
             </div>
             <div className="text-gray-500/60 text-sm">
                
-                <p className="mt-2 text-gray-700 font-medium text-lg truncate w-full">{product.name}</p>
+                <p className="mt-2 text-gray-700 font-medium text-lg truncate w-full">
+                    {product.name}
+                </p>
+                {displayUnit && (
+                    <p className="text-xs text-gray-500/80 mt-1">Đơn vị: {displayUnit}</p>
+                )}
                 <div className="flex items-center gap-0.5">
                     {Array(5).fill('').map((_, i) => (
                         <img 

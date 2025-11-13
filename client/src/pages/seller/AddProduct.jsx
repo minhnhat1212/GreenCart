@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { assets, categories } from '../../assets/assets';
+import React, { useMemo, useState } from 'react'
+import { assets, categories, unitsByCategory } from '../../assets/assets';
 import { useAppContext } from '../../context/AppContext';
 import toast from 'react-hot-toast';
 
@@ -8,9 +8,16 @@ const AddProduct = () => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [category, setCategory] = useState('');
+    const [unit, setUnit] = useState('');
     const [price, setPrice] = useState('');
     const [offerPrice, setOfferPrice] = useState('');
     const {axios} = useAppContext()
+
+    const unitOptions = useMemo(() => {
+        if (!category) return [];
+        return unitsByCategory[category] || [];
+    }, [category]);
+
     const onSubmitHandler = async (event) => { 
         try {
             event.preventDefault();
@@ -18,6 +25,7 @@ const AddProduct = () => {
                 name,
                 description: description.split("\n"),
                 category,
+                unit,
                 price,
                 offerPrice
             }
@@ -32,6 +40,7 @@ const AddProduct = () => {
                 setName('');
                 setDescription('');
                 setCategory('');
+                setUnit('');
                 setPrice('');
                 setOfferPrice('');
                 setFiles([])
@@ -93,8 +102,25 @@ const AddProduct = () => {
                         id="category" className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40">
                         <option value="">Chọn danh mục</option>
                         {categories.map((item,index) => (
-                            <option key={index} value={item.path}>{ item.path}</option>
+                            <option key={index} value={item.path}>{ item.text}</option>
                        ))}
+                    </select>
+                </div>
+                <div className="w-full flex flex-col gap-1">
+                    <label className="text-base font-medium" htmlFor="unit">Đơn vị tính</label>
+
+                    <select
+                        onChange={(e)=> setUnit(e.target.value)}
+                        value={unit}
+                        id="unit"
+                        className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
+                        disabled={!category}
+                        required
+                    >
+                        <option value="">{category ? 'Chọn đơn vị' : 'Chọn danh mục trước'}</option>
+                        {unitOptions.map((u) => (
+                            <option key={u} value={u}>{u}</option>
+                        ))}
                     </select>
                 </div>
                 <div className="flex items-center gap-5 flex-wrap">

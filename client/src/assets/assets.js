@@ -145,6 +145,17 @@ export const categories = [
   },
 ];
 
+// Gợi ý đơn vị tính theo danh mục
+export const unitsByCategory = {
+  Vegetables: ["kg", "g", "bó", "củ", "túi"],
+  Fruits: ["kg", "g", "quả", "hộp"],
+  Drinks: ["L", "ml", "chai", "lon", "thùng"],
+  Instant: ["gói", "thùng", "hộp"],
+  Dairy: ["L", "ml", "g", "hộp", "vỉ"],
+  Bakery: ["cái", "ổ", "hộp", "g"],
+  Grains: ["kg", "g", "túi", "bao"],
+};
+
 export const footerLinks = [
   {
     title: "Truy cập",

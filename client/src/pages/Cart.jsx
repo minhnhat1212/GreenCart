@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useAppContext } from "../context/AppContext"
-import { assets } from "../assets/assets";
+import { assets, unitsByCategory } from "../assets/assets";
 import toast from "react-hot-toast";
 
 
@@ -214,7 +214,9 @@ const Cart = () => {
                     <p className="text-center">Thao tác</p>
                 </div>
 
-                {cartArray.map((product, index) => (
+                {cartArray.map((product, index) => {
+                    const displayUnit = product.unit || unitsByCategory[product.category]?.[0] || "";
+                    return (
                     <div key={index} className="grid grid-cols-[2fr_1fr_1fr] text-gray-500 items-center text-sm md:text-base font-medium pt-3">
                         <div className="flex items-center md:gap-6 gap-3">
                             <div onClick={() => {
@@ -224,8 +226,8 @@ const Cart = () => {
                             </div>
                             <div>
                                 <p className="hidden md:block font-semibold">{product.name}</p>
-                                <div className="font-normal text-gray-500/70">
-                                    <p>Trọng lượng: <span>{product.weight || "N/A"}</span></p>
+                                <div className="font-normal text-gray-500/70 space-y-1">
+                                    {displayUnit && <p className="text-xs md:text-sm text-gray-500/80">Đơn vị: {displayUnit}</p>}
                                     <div className='flex items-center'>
                                         <p>Số lượng:</p>
                                         <div className='flex items-center border border-gray-300 rounded ml-2'>
@@ -265,8 +267,9 @@ const Cart = () => {
                         <button onClick={()=> removeFromCart(product._id)} className="cursor-pointer mx-auto">
                           <img src={assets.remove_icon} alt="remove"  className="inline-block w-6 h-6"/>
                         </button>
-                    </div>)
-                )}
+                    </div>
+                    );
+                })}
 
                 <button onClick={() => { navigate("/products");scrollTo(0,0)}} className="group cursor-pointer flex items-center mt-8 gap-2 text-primary font-medium">
                     <img className="group-hover:-translate-x-1 transition" src={assets.arrow_right_icon_colored} alt="arrow" />

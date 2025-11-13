@@ -1,7 +1,7 @@
 import {useState,useEffect } from 'react';
 import { useAppContext } from '../context/AppContext';
 import { Link, useParams } from 'react-router-dom';
-import { assets } from '../assets/assets';
+import { assets, unitsByCategory } from '../assets/assets';
 import ProductCard from '../components/ProductCard';
 import toast from 'react-hot-toast';
 
@@ -20,6 +20,7 @@ const ProductDetails = () => {
     });
 
     const product = products.find((item)=> item._id===id);
+    const displayUnit = product ? (product.unit || unitsByCategory[product.category]?.[0] || "") : "";
 
     const fetchReviews = async () => {
         try {
@@ -112,6 +113,12 @@ const ProductDetails = () => {
                         <p className="text-2xl font-medium">Giá khuyến mãi : {formatCurrency(product.offerPrice)}</p>
                         <span className="text-gray-500/70">(đã bao gồm thuế)</span>
                     </div>
+
+                    <p className="text-base font-medium mt-6">Thông tin</p>
+                    <ul className="list-disc ml-4 text-gray-500/70">
+                        {displayUnit && <li>Đơn vị tính: {displayUnit}</li>}
+                        <li>Danh mục: {product.category}</li>
+                    </ul>
 
                     <p className="text-base font-medium mt-6">Mô tả</p>
                     <ul className="list-disc ml-4 text-gray-500/70">
