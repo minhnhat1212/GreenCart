@@ -239,6 +239,37 @@ export const updateOrderStatus = async (req, res) => {
     }
 }
 
+export const confirmOrderDelivery = async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        const userId = req.userId;
+
+        const order = await Order.findOne({ _id: orderId, userId }).populate("items.product address");
+
+        if (!order) {
+            return res.json({ success: false, message: "Không tìm thấy đơn hàng" });
+        }
+
+        if (order.status === "Delivered") {
+            return res.json({ success: true, message: "Bạn đã xác nhận đơn hàng này rồi", order });
+        }
+
+        if (order.status === "Cancelled") {
+            return res.json({ success: false, message: "Đơn hàng đã bị hủy, không thể xác nhận giao" });
+        }
+
+        order.status = "Delivered";
+        if (order.paymentType === "COD") {
+            order.isPaid = true;
+        }
+        await order.save();
+
+        res.json({ success: true, message: "Cảm ơn bạn đã xác nhận đã nhận hàng", order });
+    } catch (error) {
+        res.json({ success: false, message: error.message });
+    }
+}
+
 // API để kiểm tra và đồng bộ trạng thái thanh toán từ Stripe
 export const syncPaymentStatus = async (req, res) => {
     try {
