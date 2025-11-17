@@ -8,6 +8,7 @@ import Footer from '../components/Footer'
 import ProductCard from '../components/ProductCard'
 import { useAppContext } from '../context/AppContext'
 import { categories } from '../assets/assets'
+import PromoVideo from '../components/PromoVideo'
 
 const Home = () => {
   const { products, navigate } = useAppContext();
@@ -47,6 +48,10 @@ const Home = () => {
   return (
     <div className='mt-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto'>
       <MainBanner />
+      <PromoVideo onCtaClick={() => {
+        navigate('/product/vegetables');
+        scrollTo(0, 0);
+      }} />
       <Categories />
      {/* <BestSeller /> */}
       
