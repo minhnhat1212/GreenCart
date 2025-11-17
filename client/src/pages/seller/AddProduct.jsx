@@ -11,6 +11,8 @@ const AddProduct = () => {
     const [unit, setUnit] = useState('');
     const [price, setPrice] = useState('');
     const [offerPrice, setOfferPrice] = useState('');
+    const [origin, setOrigin] = useState('');
+    const [certificate, setCertificate] = useState('');
     const {axios} = useAppContext()
 
     const unitOptions = useMemo(() => {
@@ -27,7 +29,9 @@ const AddProduct = () => {
                 category,
                 unit,
                 price,
-                offerPrice
+                offerPrice,
+                origin,
+                certificate
             }
             const formData = new FormData();
             formData.append('productData', JSON.stringify(productData));
@@ -43,6 +47,8 @@ const AddProduct = () => {
                 setUnit('');
                 setPrice('');
                 setOfferPrice('');
+                setOrigin('');
+                setCertificate('');
                 setFiles([])
             }
             else {
@@ -136,6 +142,18 @@ const AddProduct = () => {
                         <input onChange={(e)=> setOfferPrice(e.target.value)} value={offerPrice}
                             id="offer-price" type="number" placeholder="0" className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40" required />
                     </div>
+                </div>
+                <div className="w-full flex flex-col gap-1">
+                    <label className="text-base font-medium" htmlFor="origin">Nguồn gốc xuất xứ</label>
+
+                    <input onChange={(e)=> setOrigin(e.target.value)} value={origin}
+                        id="origin" type="text" placeholder="Nhập nguồn gốc xuất xứ" className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40" />
+                </div>
+                <div className="w-full flex flex-col gap-1">
+                    <label className="text-base font-medium" htmlFor="certificate">Chứng chỉ</label>
+
+                    <input onChange={(e)=> setCertificate(e.target.value)} value={certificate}
+                        id="certificate" type="text" placeholder="Nhập chứng chỉ" className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40" />
                 </div>
                 <button className="px-8 py-2.5 bg-primary text-white font-medium rounded cursor-pointer">THÊM</button>
             </form>

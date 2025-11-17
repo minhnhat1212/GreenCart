@@ -118,6 +118,8 @@ const ProductDetails = () => {
                     <ul className="list-disc ml-4 text-gray-500/70">
                         {displayUnit && <li>Đơn vị tính: {displayUnit}</li>}
                         <li>Danh mục: {product.category}</li>
+                        {product.origin && <li>Nguồn gốc xuất xứ: {product.origin}</li>}
+                        {product.certificate && <li>Chứng chỉ: {product.certificate}</li>}
                     </ul>
 
                     <p className="text-base font-medium mt-6">Mô tả</p>

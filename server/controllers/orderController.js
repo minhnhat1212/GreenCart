@@ -98,13 +98,14 @@ export const placeOrderStripe = async (req, res) => {
 
         const stripeInstance = new stripe(process.env.STRIPE_SECRET_KEY);
 
-        const line_items = productData.map(item => ({
+        const line_items = productData.map((item) => ({
             price_data: {
-                currency: "usd",
+                currency: "vnd",
                 product_data: {
                     name: item.name,
                 },
-               unit_amount: Math.round(item.price  * 100), // cộng 2% phí xử lý
+                // VND is a zero-decimal currency, so we pass the amount directly
+                unit_amount: Math.round(item.price),
             },
             quantity: item.quantity,
         }));

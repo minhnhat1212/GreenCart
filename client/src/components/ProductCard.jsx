@@ -2,65 +2,122 @@ import React from "react";
 import { assets, unitsByCategory } from "../assets/assets";
 import { useAppContext } from "../context/AppContext.jsx";
 
-const ProductCard = ({product}) => {
-   
-    const {currency,addToCart,removeFromCart,cartItems,navigate, formatCurrency} = useAppContext()
-    const displayUnit = product.unit || unitsByCategory[product.category]?.[0] || "";
+const ProductCard = ({ product }) => {
+  const {
+    addToCart,
+    removeFromCart,
+    cartItems,
+    navigate,
+    formatCurrency,
+  } = useAppContext();
 
-    return product && (
-        <div onClick={()=> {navigate(`/products/ ${product.category.toLowerCase()}/${product._id}`); scrollTo(0,0)}} className="border border-gray-500/20 rounded-md md:px-4 px-3 py-2 bg-white min-w-56 max-w-56 w-full">
-            <div className="group cursor-pointer flex items-center justify-center px-2 h-40">
-                <img className="group-hover:scale-105 transition w-full h-full object-contain" src={product.image[0]} alt={product.name} />
-            </div>
-            <div className="text-gray-500/60 text-sm">
-               
-                <p className="mt-2 text-gray-700 font-medium text-lg truncate w-full">
-                    {product.name}
-                </p>
-                {displayUnit && (
-                    <p className="text-xs text-gray-500/80 mt-1">Đơn vị: {displayUnit}</p>
-                )}
-                <div className="flex items-center gap-0.5">
-                    {Array(5).fill('').map((_, i) => (
-                        <img 
-                            key={i} 
-                            className="md:w-3.5 w-3" 
-                            src={i < Math.floor(product.rating) ? assets.star_icon : assets.star_dull_icon} 
-                            alt="" 
-                        />
-                    ))}
-                    <p>({product.reviewCount || 0})</p>
-                </div>
-                <div className="flex items-end justify-between mt-3 ">
-                    <p className="md:text-base text-lg   font-bold text-primary">
+  const displayUnit =
+    product.unit || unitsByCategory[product.category]?.[0] || "";
 
-                        <span className="text-gray-500/60 md:text-sm text-xs line-through">{formatCurrency(product.price)}</span>
-                         <br/>
-                        {formatCurrency(product.offerPrice)}
-                       
-                                               
-                    </p>
-                    <div onClick={(e) => { e.stopPropagation(); }} className="text-primary">
-                        {!cartItems[product._id] ? (
-                            <button className="flex items-center justify-center gap-1 bg-primary/10 border border-primary/40 md:w-[80px] w-[64px] h-[34px] rounded cursor-pointer   " onClick={() => addToCart(product._id)} >
-                                <img src={assets.cart_icon} alt="cart_icon" />
-                                Thêm 
-                            </button>
-                        ) : (
-                            <div className="flex items-center justify-center gap-2 md:w-20 w-16 h-[34px] bg-primary/25 rounded select-none">
-                                <button onClick={() => {removeFromCart(product._id)}} className="cursor-pointer text-md px-2 h-full" >
-                                    -
-                                </button>
-                                <span className="w-5 text-center">{cartItems[product._id]}</span>
-                                <button onClick={() => {addToCart(product._id)}} className="cursor-pointer text-md px-2 h-full" >
-                                    +
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </div>
+  if (!product) return null;
+
+  const hasDiscount = product.price > product.offerPrice;
+
+  return (
+    <div
+      onClick={() => {
+        navigate(`/products/ ${product.category.toLowerCase()}/${product._id}`);
+        scrollTo(0, 0);
+      }}
+      className="group bg-white border border-gray-100 rounded-2xl shadow-[0_15px_40px_rgba(16,185,129,0.08)] hover:shadow-[0_20px_50px_rgba(16,185,129,0.16)] transition-all duration-300 cursor-pointer overflow-hidden flex flex-col"
+    >
+      <div className="relative w-full h-48 overflow-hidden">
+        <img
+          className="w-full h-full object-cover transition duration-500 group-hover:scale-105"
+          src={product.image[0]}
+          alt={product.name}
+          loading="lazy"
+        />
+        {product.certificate && (
+          <span className="absolute top-3 right-3 inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-white/90 text-emerald-700 shadow-sm">
+            <img src={assets.leaf_icon} alt="" className="w-3.5 h-3.5" />
+            {product.certificate}
+          </span>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-2 px-4 py-5 text-gray-500/80 grow">
+        <div>
+          <p className="text-gray-900 text-lg font-semibold leading-snug">
+            {product.name}
+          </p>
+          {Array.isArray(product.description) && product.description[0] && (
+            <p className="text-sm text-gray-500 mt-1">
+              {product.description[0]}
+            </p>
+          )}
+          {product.origin && (
+            <p className="text-xs text-gray-400 mt-1">
+              Xuất xứ: {product.origin}
+            </p>
+          )}
         </div>
-    );
+
+        <div className="mt-auto flex items-end justify-between">
+          <div>
+            {hasDiscount && (
+              <p className="text-xs text-gray-400 line-through">
+                {formatCurrency(product.price)}
+              </p>
+            )}
+            <p className="text-2xl font-semibold text-emerald-600">
+              {formatCurrency(product.offerPrice)}
+            </p>
+            {displayUnit && (
+              <p className="text-xs text-gray-500">{`/${displayUnit}`}</p>
+            )}
+          </div>
+
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            className="flex-shrink-0"
+          >
+            {!cartItems[product._id] ? (
+              <button
+                className="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 transition hover:bg-emerald-600"
+                onClick={() => addToCart(product._id)}
+              >
+                <img
+                  src={assets.cart_icon}
+                  alt="cart_icon"
+                  className="w-5 filter brightness-0 invert"
+                />
+              </button>
+            ) : (
+              <div className="flex items-center gap-3 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full font-medium select-none">
+                <button
+                  onClick={() => {
+                    removeFromCart(product._id);
+                  }}
+                  className="text-lg leading-none"
+                >
+                  -
+                </button>
+                <span className="min-w-4 text-center">
+                  {cartItems[product._id]}
+                </span>
+                <button
+                  onClick={() => {
+                    addToCart(product._id);
+                  }}
+                  className="text-lg leading-none"
+                >
+                  +
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
+
 export default ProductCard;

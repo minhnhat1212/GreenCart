@@ -8,6 +8,8 @@ const productSchema = new mongoose.Schema({
     offerPrice: { type: Number, required: true },
     image: { type: Array, required: true },
     category: { type: String, required: true },
+    origin: { type: String, default: '' },
+    certificate: { type: String, default: '' },
     inStock: { type: Boolean, default: true },
     isDeleted: { type: Boolean, default: false },
     rating: { type: Number, default: 0 },
