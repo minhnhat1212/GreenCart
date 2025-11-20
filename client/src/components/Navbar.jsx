@@ -47,32 +47,33 @@ const Navbar = () => {
   }, [showDropdown])
 
   return (
-    <nav className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white relative transition-all">
+    <nav className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-5 border-b border-gray-100 bg-white/80 backdrop-blur-md sticky top-0 z-50 transition-all">
 
       {/* Logo */}
       <NavLink to="/" onClick={() => setOpen(false)}>
-        <img className="h-12" src={assets.logo} alt="logo" />
+        <img className="h-10 md:h-12" src={assets.logo} alt="logo" />
       </NavLink>
 
       {/* Desktop Menu */}
-      <div className="hidden sm:flex items-center gap-10">
-        <NavLink to="/" className="text-lg font-medium hover:text-primary transition">{t('home')}</NavLink>
-        <NavLink to="/products" className="text-lg font-medium hover:text-primary transition">{t('products')}</NavLink>
-        <NavLink to="/contact" className="text-lg font-medium hover:text-primary transition">{t('contact')}</NavLink>
+      <div className="hidden sm:flex items-center gap-8 xl:gap-12">
+        <NavLink to="/" className="text-base font-medium text-gray-700 hover:text-primary transition-colors">{t('home')}</NavLink>
+        <NavLink to="/products" className="text-base font-medium text-gray-700 hover:text-primary transition-colors">{t('products')}</NavLink>
+        <NavLink to="/promotions" className="text-base font-medium text-gray-700 hover:text-primary transition-colors">🎉 Ưu đãi</NavLink>
+        <NavLink to="/contact" className="text-base font-medium text-gray-700 hover:text-primary transition-colors">{t('contact')}</NavLink>
 
-        <div className="hidden lg:flex items-center text-sm gap-2 border border-gray-300 px-4 py-2 rounded-full">
+        <div className="hidden lg:flex items-center text-sm gap-3 bg-gray-100 px-5 py-2.5 rounded-full hover:bg-gray-200 transition-colors w-64">
+          <img src={assets.search_icon} alt="search" className="w-4 h-4 opacity-60" />
           <input
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="py-1.5 w-full bg-transparent outline-none placeholder-gray-500"
+            className="w-full bg-transparent outline-none placeholder-gray-500 text-gray-700"
             type="text"
             placeholder={t('searchPlaceholder')}
           />
-          <img src={assets.search_icon} alt="search" className="w-5 h-5" />
         </div>
 
-        <div onClick={() => navigate("/cart")} className="relative cursor-pointer">
-          <img src={assets.nav_cart_icon} alt='cart' className='w-7 opacity-80' />
-          <span className="absolute -top-2 -right-3 text-xs text-white bg-primary w-[20px] h-[20px] rounded-full flex items-center justify-center">
+        <div onClick={() => navigate("/cart")} className="relative cursor-pointer hover:scale-105 transition-transform">
+          <img src={assets.nav_cart_icon} alt='cart' className='w-6 h-6 opacity-80' />
+          <span className="absolute -top-1.5 -right-1.5 text-[10px] font-bold text-white bg-primary w-5 h-5 rounded-full flex items-center justify-center shadow-sm">
             {getCartCount()}
           </span>
         </div>
@@ -80,27 +81,27 @@ const Navbar = () => {
         {!user ? (
           <button
             onClick={() => setShowUserLogin(true)}
-            className="px-10 py-3 bg-primary hover:bg-primary-dull transition text-white rounded-full text-lg font-medium"
+            className="px-8 py-2.5 bg-primary hover:bg-primary-hover transition text-white rounded-full text-sm font-medium shadow-lg shadow-primary/30"
           >
             {t('login')}
           </button>
         ) : (
           <div className='relative dropdown-container'>
-            <img 
-              src={user?.avatar || assets.profile_icon} 
-              alt='Profile' 
-              className='w-10 h-10 rounded-full object-cover cursor-pointer border border-gray-300'
+            <img
+              src={user?.avatar || assets.profile_icon}
+              alt='Profile'
+              className='w-10 h-10 rounded-full object-cover cursor-pointer border-2 border-white shadow-md hover:shadow-lg transition-shadow'
               onClick={() => setShowDropdown(!showDropdown)}
               onError={(e) => {
                 e.target.src = assets.profile_icon
               }}
             />
             {showDropdown && (
-              <ul className='absolute top-12 right-0 bg-white shadow-lg border border-gray-200 py-2.5 w-36 rounded-md text-sm z-40'>
-                <li onClick={() => {navigate("/profile"); setShowDropdown(false)}} className='p-2 pl-4 hover:bg-primary/10 cursor-pointer'>{t('profile')}</li>
-                <li onClick={() => {navigate("/my-orders"); setShowDropdown(false)}} className='p-2 pl-4 hover:bg-primary/10 cursor-pointer'>{t('orders')}</li>
-                <li onClick={() => {navigate("/settings"); setShowDropdown(false)}} className='p-2 pl-4 hover:bg-primary/10 cursor-pointer'>{t('settings')}</li>
-                <li onClick={() => {logout(); setShowDropdown(false)}} className='p-2 pl-4 hover:bg-primary/10 cursor-pointer'>{t('logout')}</li>
+              <ul className='absolute top-14 right-0 bg-white shadow-xl border border-gray-100 py-2 w-48 rounded-xl text-sm z-40 overflow-hidden animate-fade-in'>
+                <li onClick={() => { navigate("/profile"); setShowDropdown(false) }} className='px-4 py-3 hover:bg-gray-50 cursor-pointer flex items-center gap-2 text-gray-700 transition-colors'>{t('profile')}</li>
+                <li onClick={() => { navigate("/my-orders"); setShowDropdown(false) }} className='px-4 py-3 hover:bg-gray-50 cursor-pointer flex items-center gap-2 text-gray-700 transition-colors'>{t('orders')}</li>
+                <li onClick={() => { navigate("/settings"); setShowDropdown(false) }} className='px-4 py-3 hover:bg-gray-50 cursor-pointer flex items-center gap-2 text-gray-700 transition-colors'>{t('settings')}</li>
+                <li onClick={() => { logout(); setShowDropdown(false) }} className='px-4 py-3 hover:bg-red-50 text-red-500 cursor-pointer flex items-center gap-2 transition-colors'>{t('logout')}</li>
               </ul>
             )}
           </div>
@@ -108,37 +109,38 @@ const Navbar = () => {
       </div>
 
       {/* Menu Icon for Mobile */}
-      <button onClick={() => setOpen(!open)} className="sm:hidden">
-        <img src={assets.menu_icon} alt="menu" className="w-7 h-7" />
+      <button onClick={() => setOpen(!open)} className="sm:hidden p-2 rounded-md hover:bg-gray-100 transition-colors">
+        <img src={assets.menu_icon} alt="menu" className="w-6 h-6" />
       </button>
 
       {/* Mobile Menu */}
       {open && (
-        <div className="sm:hidden absolute top-[80px] left-0 w-full bg-white shadow-md py-6 flex flex-col items-start gap-3 px-6 text-base z-50">
-          <NavLink to="/" onClick={() => setOpen(false)}>{t('home')}</NavLink>
-          <NavLink to="/products" onClick={() => setOpen(false)}>{t('products')}</NavLink>
+        <div className="sm:hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-md shadow-lg py-6 flex flex-col items-start gap-1 px-6 text-base z-50 border-t border-gray-100">
+          <NavLink to="/" onClick={() => setOpen(false)} className="w-full py-3 border-b border-gray-100 text-gray-700">{t('home')}</NavLink>
+          <NavLink to="/products" onClick={() => setOpen(false)} className="w-full py-3 border-b border-gray-100 text-gray-700">{t('products')}</NavLink>
+          <NavLink to="/promotions" onClick={() => setOpen(false)} className="w-full py-3 border-b border-gray-100 text-gray-700">🎉 Ưu đãi</NavLink>
           {user && (
             <>
-              <NavLink to="/profile" onClick={() => setOpen(false)}>{t('profile')}</NavLink>
-              <NavLink to="/my-orders" onClick={() => setOpen(false)}>{t('orders')}</NavLink>
-              <NavLink to="/settings" onClick={() => setOpen(false)}>{t('settings')}</NavLink>
+              <NavLink to="/profile" onClick={() => setOpen(false)} className="w-full py-3 border-b border-gray-100 text-gray-700">{t('profile')}</NavLink>
+              <NavLink to="/my-orders" onClick={() => setOpen(false)} className="w-full py-3 border-b border-gray-100 text-gray-700">{t('orders')}</NavLink>
+              <NavLink to="/settings" onClick={() => setOpen(false)} className="w-full py-3 border-b border-gray-100 text-gray-700">{t('settings')}</NavLink>
             </>
           )}
-          <NavLink to="/contact" onClick={() => setOpen(false)}>{t('contact')}</NavLink>
+          <NavLink to="/contact" onClick={() => setOpen(false)} className="w-full py-3 border-b border-gray-100 text-gray-700">{t('contact')}</NavLink>
           {!user ? (
             <button
               onClick={() => {
                 setOpen(false)
                 setShowUserLogin(true)
               }}
-              className="px-8 py-3 mt-2 bg-primary hover:bg-primary-dull transition text-white rounded-full text-base"
+              className="w-full py-3 mt-4 bg-primary hover:bg-primary-hover transition text-white rounded-lg text-base font-medium shadow-md"
             >
-             {t('login')}
+              {t('login')}
             </button>
           ) : (
             <button
               onClick={logout}
-              className="px-8 py-3 mt-2 bg-primary hover:bg-primary-dull transition text-white rounded-full text-base"
+              className="w-full py-3 mt-4 bg-gray-100 hover:bg-gray-200 transition text-gray-700 rounded-lg text-base font-medium"
             >
               {t('logout')}
             </button>

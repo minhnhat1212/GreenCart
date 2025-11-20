@@ -5,18 +5,30 @@ import { useEffect } from 'react'
 
 const Loading = () => {
 
-    const { navigate } = useAppContext()
+    const { navigate, fetchUser } = useAppContext()
     let { search } = useLocation()
     const query = new URLSearchParams(search)
     const nextUrl = query.get('next');
 
     useEffect(() => {
+        // Refresh user data để đồng bộ giỏ hàng sau khi thanh toán Stripe thành công
+        // Webhook sẽ xóa giỏ hàng trên server, fetchUser sẽ sync lại với client
         if (nextUrl) {
-            setTimeout(() => {
+            // Refresh user data sau một khoảng thời gian ngắn để đợi webhook xử lý
+            const refreshTimer = setTimeout(() => {
+                fetchUser();
+            }, 2000);
+            
+            const navigateTimer = setTimeout(() => {
                 navigate(`/${nextUrl}`)
-            },5000)
+            }, 5000);
+            
+            return () => {
+                clearTimeout(refreshTimer);
+                clearTimeout(navigateTimer);
+            };
         }
-    },[nextUrl])
+    },[nextUrl, fetchUser, navigate])
 
   return (
     <div className='flex justify-center items-center h-screen'>

@@ -27,6 +27,7 @@ import BestSellingProducts from './pages/seller/BestSellingProducts.jsx'
 import { SettingsProvider } from './context/SettingsContext.jsx'
 import Settings from './pages/Settings.jsx'
 import Dashboard from './pages/seller/Dashboard.jsx'
+import Promotions from './pages/Promotions.jsx'
 
 const App = () => {
   const isSellerPath = useLocation().pathname.includes("seller");
@@ -52,6 +53,7 @@ const App = () => {
             <Route path='/loader' element={<Loading />} />
             <Route path='/profile' element={<Profile />} />
             <Route path='/settings' element={<Settings />} />
+            <Route path='/promotions' element={<Promotions />} />
             <Route path='/seller' element={isSeller ? < SellerLayout /> : <SellerLogin />}>
               <Route index element={isSeller ? <Dashboard /> : null} />
               <Route path='add-product' element={<AddProduct />} />

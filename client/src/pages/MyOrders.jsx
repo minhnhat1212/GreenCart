@@ -61,6 +61,41 @@ const getStatusBadgeClasses = (status) => {
   }
 }
 
+// Component theo dõi tiến độ dùng chung cho tất cả đơn hàng
+const OrderTimeline = ({ orderStatus }) => {
+  const steps = orderStatus === 'Cancelled' ? [...BASE_STATUS_STEPS.slice(0, 2), CANCELLED_STEP] : BASE_STATUS_STEPS
+  const currentIndex = steps.findIndex((step) => step.value === orderStatus)
+
+  return (
+    <div className='relative mt-4'>
+      <div className='absolute left-5 top-0 bottom-0 border-l-2 border-dashed border-gray-200' aria-hidden='true'></div>
+      <div className='space-y-6'>
+        {steps.map((step, idx) => {
+          const isActive = idx === currentIndex
+          const isCompleted = idx < currentIndex && orderStatus !== 'Cancelled'
+          return (
+            <div key={step.value} className='relative pl-12'>
+              <span
+                className={`absolute left-1 top-0 flex h-8 w-8 items-center justify-center rounded-full border-2 bg-white ${
+                  isActive
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : isCompleted
+                      ? 'border-green-500 bg-green-50 text-green-600'
+                      : 'border-gray-200 text-gray-400'
+                }`}
+              >
+                {isCompleted ? '✓' : idx + 1}
+              </span>
+              <p className={`text-sm font-semibold ${isActive ? 'text-gray-900' : 'text-gray-600'}`}>{step.label}</p>
+              <p className='text-xs text-gray-500'>{step.description}</p>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 const MyOrders = () => {
   const [myOrder, setMyOrders] = useState([])
   const [confirming, setConfirming] = useState({})
@@ -95,52 +130,6 @@ const MyOrders = () => {
     } finally {
       setConfirming((prev) => ({ ...prev, [orderId]: false }))
     }
-  }
-
-  const timelineConfig = useMemo(
-    () =>
-      myOrder.reduce((acc, order) => {
-        acc[order._id] =
-          order.status === 'Cancelled'
-            ? [...BASE_STATUS_STEPS.slice(0, 2), CANCELLED_STEP]
-            : BASE_STATUS_STEPS
-        return acc
-      }, {}),
-    [myOrder]
-  )
-
-  const renderTimeline = (order) => {
-    const steps = timelineConfig[order._id] || BASE_STATUS_STEPS
-    const currentIndex = steps.findIndex((step) => step.value === order.status)
-
-    return (
-      <div className='relative mt-4'>
-        <div className='absolute left-5 top-0 bottom-0 border-l-2 border-dashed border-gray-200' aria-hidden='true'></div>
-        <div className='space-y-6'>
-          {steps.map((step, idx) => {
-            const isActive = idx === currentIndex
-            const isCompleted = idx < currentIndex && order.status !== 'Cancelled'
-            return (
-              <div key={step.value} className='relative pl-12'>
-                <span
-                  className={`absolute left-1 top-0 flex h-8 w-8 items-center justify-center rounded-full border-2 bg-white ${
-                    isActive
-                      ? 'border-primary bg-primary/10 text-primary'
-                      : isCompleted
-                        ? 'border-green-500 bg-green-50 text-green-600'
-                        : 'border-gray-200 text-gray-400'
-                  }`}
-                >
-                  {isCompleted ? '✓' : idx + 1}
-                </span>
-                <p className={`text-sm font-semibold ${isActive ? 'text-gray-900' : 'text-gray-600'}`}>{step.label}</p>
-                <p className='text-xs text-gray-500'>{step.description}</p>
-              </div>
-            )
-          })}
-        </div>
-      </div>
-    )
   }
 
   return (
@@ -223,7 +212,7 @@ const MyOrders = () => {
                     </button>
                   )}
                 </div>
-                {renderTimeline(order)}
+                <OrderTimeline orderStatus={order.status} />
 
                 <div className='mt-6 grid gap-4 md:grid-cols-2'>
                   <div className='rounded-lg border border-white bg-white p-4 shadow-sm'>

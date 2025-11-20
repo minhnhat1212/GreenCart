@@ -80,6 +80,12 @@ const Cart = () => {
             } else {
                 const { data } = await axios.post('/api/orders/stripe', orderData);
                 if (data.success) {
+                    // Xóa giỏ hàng ngay sau khi đơn hàng được tạo thành công
+                    // (tương tự như COD, vì đơn hàng đã được tạo trong database)
+                    setCartItems({})
+                    setAppliedCoupon(null);
+                    setDiscount(0);
+                    setCouponCode('');
                     window.location.replace(data.url)
                 } else {
                     toast.error(data.message)
