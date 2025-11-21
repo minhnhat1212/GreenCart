@@ -33,7 +33,7 @@ const Chatbox = () => {
         try {
             // Use relative URL if proxy is set up, or full URL if not. 
             // Assuming backend is on port 4000 based on server.js
-            const response = await axios.post('http://localhost:4000/api/chat', { message: input });
+            const response = await axios.post('http://localhost:4000/api/chat', { message: input }, { withCredentials: true });
             const botMessage = { role: 'model', text: response.data.reply };
             setMessages(prev => [...prev, botMessage]);
         } catch (error) {
@@ -70,8 +70,8 @@ const Chatbox = () => {
                         {messages.map((msg, index) => (
                             <div key={index} className={`mb-3 flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                 <div className={`max-w-[80%] rounded-lg p-3 text-sm ${msg.role === 'user'
-                                        ? 'bg-green-600 text-white rounded-br-none'
-                                        : 'bg-white text-gray-800 border border-gray-200 rounded-bl-none shadow-sm'
+                                    ? 'bg-green-600 text-white rounded-br-none'
+                                    : 'bg-white text-gray-800 border border-gray-200 rounded-bl-none shadow-sm'
                                     }`}>
                                     {msg.text}
                                 </div>
