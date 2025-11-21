@@ -1,6 +1,7 @@
 import React from 'react'
 import Navbar from './components/Navbar.jsx'
-import { Route,Routes, useLocation } from 'react-router-dom'
+import Chatbox from './components/Chatbox.jsx'
+import { Route, Routes, useLocation } from 'react-router-dom'
 import Home from './pages/Home.jsx'
 import Login from './components/Login.jsx'
 import Contact from './pages/Contact';
@@ -31,19 +32,24 @@ import Promotions from './pages/Promotions.jsx'
 
 const App = () => {
   const isSellerPath = useLocation().pathname.includes("seller");
-  const { showUserLogin,isSeller } = useAppContext();
-  
+  const { showUserLogin, isSeller } = useAppContext();
+
   return (
     <SettingsProvider>
       <div className='text-default min-h-screen text-gray-700 bg-white'>
-        {isSellerPath ? null : < Navbar />}
-        {showUserLogin ? <Login/>:null}
+        {isSellerPath ? null : (
+          <>
+            <Navbar />
+            <Chatbox />
+          </>
+        )}
+        {showUserLogin ? <Login /> : null}
         <Toaster />
-        <div className={`${isSellerPath ? "" :"px-6 md:px-16 lg:px-24 xl:px-32"}`}>
+        <div className={`${isSellerPath ? "" : "px-6 md:px-16 lg:px-24 xl:px-32"}`}>
           <Routes>
             <Route path='/' element={<Home />} />
             <Route path='/products' element={<AllProducts />} />
-            <Route path='/product/:category' element={<ProductCategory/>} />
+            <Route path='/product/:category' element={<ProductCategory />} />
             <Route path='/products/:category/:id' element={<ProductDetails />} />
 
             <Route path="/contact" element={<Contact />} />
@@ -58,7 +64,7 @@ const App = () => {
               <Route index element={isSeller ? <Dashboard /> : null} />
               <Route path='add-product' element={<AddProduct />} />
               <Route path='product-list' element={<ProductList />} />
-              <Route path='orders' element={<Orders/>} />
+              <Route path='orders' element={<Orders />} />
               <Route path='create-coupon' element={<CreateCoupon />} />
               <Route path='coupon-list' element={<CouponList />} />
               <Route path='revenue-management' element={<RevenueManagement />} />
@@ -66,7 +72,7 @@ const App = () => {
             </Route>
           </Routes>
         </div>
-         {!isSellerPath && <Footer/> }
+        {!isSellerPath && <Footer />}
       </div>
     </SettingsProvider>
   )

@@ -11,10 +11,12 @@ import productRouter from './routes/productRoute.js';
 import cartRouter from './routes/cartRoute.js';
 import addressRouter from './routes/addressRoute.js';
 import orderRouter from './routes/orderRoute.js';
+import reviewRouter from './routes/reviewRoute.js';
+import couponRouter from './routes/couponRoute.js';
+import chatRouter from './routes/chat.route.js';
+
 import { stripeWebhooks } from './controllers/orderController.js';
 
-import reviewRouter from './routes/reviewRoute.js'
-import couponRouter from './routes/couponRoute.js'
 const app = express();
 const port = process.env.PORT || 4000;
 
@@ -47,7 +49,8 @@ app.use('/api/product', productRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/address', addressRouter);
 app.use('/api/orders', orderRouter);
+app.use('/api/review', reviewRouter);
+app.use('/api/coupon', couponRouter);
+app.use('/api/chat', chatRouter);
 
-app.use('/api/review', reviewRouter)
-app.use('/api/coupon', couponRouter)
 app.listen(port, () => console.log('Server started on PORT : ' + port))
